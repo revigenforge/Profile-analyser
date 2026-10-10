@@ -79,7 +79,7 @@ $('#link-form').addEventListener('submit', async (e) => {
     renderReport(data.report, data.missing);
   } catch (err) {
     if (err.fallback) {
-      switchToFallback(err.error, err.partial);
+      switchToFallback(err.error, err.partial, err.attempts);
     } else {
       showError(err.message);
     }
@@ -88,10 +88,22 @@ $('#link-form').addEventListener('submit', async (e) => {
   }
 });
 
-function switchToFallback(message, partial) {
+const SOURCE_LABELS = {
+  'instagram-graph-api': 'Meta Business Discovery API',
+  'instagram-web': 'Instagram public endpoint',
+  page: 'Profile web page',
+  instagram: 'Instagram',
+};
+
+function switchToFallback(message, partial, attempts = []) {
   showTab('manual');
   const note = $('#fallback-note');
-  note.innerHTML = `<strong>Let's do it another way.</strong> ${esc(message)}`;
+  const details = attempts.length ? `
+    <details class="tech">
+      <summary>Technical details</summary>
+      <ul>${attempts.map((a) => `<li><b>${esc(SOURCE_LABELS[a.source] ?? a.source)}:</b> ${esc(a.error)}</li>`).join('')}</ul>
+    </details>` : '';
+  note.innerHTML = `<strong>Let's do it another way.</strong> ${esc(message)}${details}`;
   note.hidden = false;
   if (partial) fillForm(partial);
   $('#manual-form').scrollIntoView({ behavior: 'smooth', block: 'start' });

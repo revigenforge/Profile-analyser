@@ -195,6 +195,9 @@ textarea { resize: vertical; }
   border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 20px;
 }
 .notice { background: var(--g-100); border-left: 4px solid var(--black); }
+.tech { margin-top: 10px; font-size: 13px; }
+.tech summary { cursor: pointer; font-weight: 600; color: var(--g-700); }
+.tech ul { margin: 8px 0 0; padding-left: 18px; font-family: var(--mono); font-size: 12px; word-break: break-word; }
 .error { margin: 0 24px 24px; background: var(--black); color: var(--white); }
 
 /* ---------- Loading ---------- */

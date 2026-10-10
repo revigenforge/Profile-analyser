@@ -83,6 +83,18 @@ test('falls back to the web endpoint, then gives up cleanly', async () => {
   assert.equal(ok.profile.followers, 900);
 
   globalThis.fetch = async () => json(401, { message: 'Please wait a few minutes' });
-  assert.equal(await fetchInstagramProfile('x'), null);
-  assert.equal(await fetchInstagramProfile('bad name!'), null);
+  const failed = await fetchInstagramProfile('x');
+  assert.equal(failed.profile, null);
+  assert.deepEqual(failed.attempts.map((a) => a.source), ['instagram-graph-api', 'instagram-web']);
+  assert.match(failed.attempts[0].error, /Invalid user id|HTTP 401/);
+  assert.equal((await fetchInstagramProfile('bad name!')).profile, null);
+});
+
+test('reports when the Meta API is not configured', async () => {
+  delete process.env.META_ACCESS_TOKEN;
+  globalThis.fetch = async () => json(429, {});
+  const r = await fetchInstagramProfile('someone');
+  assert.equal(r.profile, null);
+  assert.match(r.attempts[0].error, /Not configured/);
+  assert.match(r.attempts[1].error, /HTTP 429/);
 });

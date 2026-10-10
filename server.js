@@ -6,7 +6,8 @@ import { analyzeProfile } from './lib/analyzer.js';
 import { scrapeProfile, ScrapeError } from './lib/scraper.js';
 import { aiEnabled, extractFromScreenshots, generateInsights } from './lib/ai.js';
 import { detectPlatform } from './lib/platforms.js';
-import { saveConnection } from './lib/storage.js';
+import { saveConnection, sheetsConfigured } from './lib/storage.js';
+import { businessDiscoveryConfigured } from './lib/instagram.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3000;
@@ -57,7 +58,12 @@ function fallbackMessage(platform, loginWall) {
 }
 
 app.get('/api/status', (_req, res) => {
-  res.json({ ok: true, aiEnabled: aiEnabled() });
+  res.json({
+    ok: true,
+    aiEnabled: aiEnabled(),
+    instagramApiConfigured: businessDiscoveryConfigured(),
+    googleSheetConfigured: sheetsConfigured(),
+  });
 });
 
 app.post('/api/analyze/url', async (req, res) => {
@@ -69,6 +75,7 @@ app.post('/api/analyze/url', async (req, res) => {
         fallback: true,
         error: fallbackMessage(scraped.platform, scraped.loginWall),
         partial: { platform: scraped.platform, handle: scraped.handle, url: scraped.url, ...scraped.profile },
+        attempts: scraped.attempts,
       });
     }
     const profile = mergeProfiles(
@@ -88,6 +95,7 @@ app.post('/api/analyze/url', async (req, res) => {
         ? err.message
         : fallbackMessage(detected?.platform, false),
       partial: detected ? { platform: detected.platform, handle: detected.handle, url: detected.url } : null,
+      attempts: err.attempts ?? [{ source: 'page', error: err.message }],
     });
   }
 });
