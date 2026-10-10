@@ -1,6 +1,6 @@
 # RevigenForge — Creator Profile Analyser
 
-A black & white web app that analyses a creator's profile and turns it into a clear growth plan, and invites the creator to connect with RevigenForge.
+A black & white web app (branded with the RevigenForge logo) that analyses a creator's profile and turns it into a clear growth plan, and invites the creator to connect with RevigenForge.
 
 ## How it works
 
@@ -10,8 +10,9 @@ A black & white web app that analyses a creator's profile and turns it into a cl
    - type or correct any numbers (`12.4K` and `1.2M` are accepted).
 3. **Report**:
    - an overall score (0–100) and grade, plus the creator's audience tier
-   - engagement rate compared against a per-platform benchmark
-   - a score for each of six areas: reach, engagement, consistency, profile & bio, content library, authority
+   - engagement rate compared against a per-platform benchmark, and monthly follower growth
+   - a score for each of seven areas: reach, engagement, follower growth, consistency, profile & bio, content library, authority, shown as a radar chart and as bars
+   - status colours for every score: green ▲ Strong (70+), amber ● Fair (45–69), red ▼ Weak (<45). Each colour comes with an icon and a word, so it never relies on colour alone
    - a bio/profile checklist and a prioritised action plan
    - a "where RevigenForge would focus" section
    - a download-as-PDF option (print)

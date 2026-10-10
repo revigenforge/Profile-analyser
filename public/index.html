@@ -8,12 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%23000%22/%3E%3Ctext x=%2216%22 y=%2222%22 font-size=%2216%22 font-family=%22Arial%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%23fff%22%3ERF%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" type="image/png" href="favicon.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="/">REVIGEN<span>FORGE</span></a>
+    <a class="brand" href="/" aria-label="RevigenForge home"><img src="logo.png" alt="RevigenForge" width="640" height="353" /></a>
     <nav>
       <a href="#analyse">Analyse</a>
       <a href="#connect" class="nav-cta">Work with us</a>
@@ -22,6 +22,26 @@
 
   <main>
     <section class="hero" id="analyse">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="float float-1" aria-hidden="true">
+        <span class="float-k">Engagement</span>
+        <span class="float-v">4.8%</span>
+        <span class="pill pill-good"><i>▲</i> Strong</span>
+      </div>
+      <div class="float float-2" aria-hidden="true">
+        <span class="float-k">Follower growth</span>
+        <span class="float-v">+6.2%<small>/mo</small></span>
+        <svg viewBox="0 0 120 36" class="spark"><polyline points="2,30 18,27 34,28 50,20 66,22 82,13 98,11 118,4" /></svg>
+      </div>
+      <div class="float float-3" aria-hidden="true">
+        <span class="float-k">Posting</span>
+        <span class="float-v">2×<small>/wk</small></span>
+        <span class="pill pill-fair"><i>●</i> Fair</span>
+      </div>
+      <div class="float float-4" aria-hidden="true">
+        <svg viewBox="0 0 60 60" class="mini-ring"><circle cx="30" cy="30" r="24" /><circle cx="30" cy="30" r="24" class="mini-ring-fg" /></svg>
+        <span><span class="float-k">Creator score</span><span class="float-v">82</span></span>
+      </div>
       <p class="eyebrow">Creator Profile Analyser</p>
       <h1>Know your profile.<br />Grow your presence.</h1>
       <p class="lede">Drop your profile link and get a full breakdown — reach, engagement, consistency, bio and brand readiness — plus a clear plan to level up with RevigenForge.</p>
@@ -98,6 +118,7 @@
               <label class="field"><span>Avg comments / post</span><input name="avgComments" inputmode="numeric" placeholder="25" /></label>
               <label class="field"><span>Avg views / post</span><input name="avgViews" inputmode="numeric" placeholder="6000" /></label>
               <label class="field"><span>Avg shares / post</span><input name="avgShares" inputmode="numeric" placeholder="12" /></label>
+              <label class="field span-2"><span>Net new followers, last 30 days <small>(from insights; can be negative)</small></span><input name="newFollowers30d" inputmode="numeric" placeholder="+850" /></label>
             </div>
             <p class="hint">Tip: “12.4K” and “1.2M” work too. Leave anything you don't know blank.</p>
             <label class="check"><input type="checkbox" name="verified" /> Verified account</label>
@@ -124,6 +145,7 @@
     <section class="connect" id="connect">
       <div class="connect-inner">
         <div>
+          <img class="connect-logo" src="logo-white.png" alt="RevigenForge" width="640" height="353" />
           <p class="eyebrow eyebrow-inv">The RevigenForge network</p>
           <h2>Grow with creators who build together.</h2>
           <p>We partner with creators on strategy, content systems and brand collaborations. Tell us about you and our team will reach out personally.</p>
@@ -155,7 +177,7 @@
   </main>
 
   <footer class="footer">
-    <span>© <span id="year"></span> RevigenForge</span>
+    <span class="footer-brand"><img src="logo.png" alt="RevigenForge" width="640" height="353" /> © <span id="year"></span></span>
     <span>We only read public profile data or what you choose to share.</span>
   </footer>
 

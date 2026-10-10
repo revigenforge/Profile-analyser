@@ -77,6 +77,7 @@ test('analyzeProfile produces a full report from rich data', () => {
     avgLikes: '980',
     avgComments: '64',
     postsPerWeek: '4',
+    newFollowers30d: '1200',
   });
   assert.ok(report.overall >= 70, `expected strong score, got ${report.overall}`);
   assert.equal(report.confidence, 100);
@@ -84,6 +85,16 @@ test('analyzeProfile produces a full report from rich data', () => {
   assert.ok(report.profileChecks.every((c) => c.ok));
   assert.ok(report.strengths.length > 0);
   assert.equal(report.revigenforge.length, 3);
+});
+
+test('growth rate handles gains and losses', () => {
+  const up = analyzeProfile({ platform: 'instagram', followers: 10_500, newFollowers30d: 500 });
+  assert.equal(up.metrics.growthRate, 5);
+  assert.ok(up.categories.find((c) => c.key === 'growth').score >= 80);
+  const down = analyzeProfile({ platform: 'instagram', followers: 9_800, newFollowers30d: '-200' });
+  assert.equal(down.metrics.growthRate, -2);
+  assert.ok(down.categories.find((c) => c.key === 'growth').score < 40);
+  assert.ok(down.recommendations.some((r) => r.title === 'Turn follower loss around'));
 });
 
 test('analyzeProfile copes with sparse data and recommends fixes', () => {
