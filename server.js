@@ -45,6 +45,17 @@ function mergeProfiles(...sources) {
   return merged;
 }
 
+function fallbackMessage(platform, loginWall) {
+  if (platform === 'instagram') {
+    return "Instagram didn't share this account's stats with us. This happens with personal (non-creator) accounts or when Instagram limits requests. " +
+      'Upload a screenshot of the profile page (and your Insights overview if you have one), or type your numbers below.';
+  }
+  if (loginWall) {
+    return `${platform === 'other' ? 'This site' : 'The platform'} hides profile stats behind a login. Upload screenshots or enter your stats instead.`;
+  }
+  return "We couldn't read public stats from that link. Upload screenshots or enter your stats instead.";
+}
+
 app.get('/api/status', (_req, res) => {
   res.json({ ok: true, aiEnabled: aiEnabled() });
 });
@@ -56,9 +67,7 @@ app.post('/api/analyze/url', async (req, res) => {
     if (!scraped.usable) {
       return res.status(422).json({
         fallback: true,
-        error: scraped.loginWall
-          ? `${scraped.platform === 'other' ? 'This site' : 'The platform'} hides profile stats behind a login. Upload screenshots or enter your stats instead.`
-          : "We couldn't read public stats from that link. Upload screenshots or enter your stats instead.",
+        error: fallbackMessage(scraped.platform, scraped.loginWall),
         partial: { platform: scraped.platform, handle: scraped.handle, url: scraped.url, ...scraped.profile },
       });
     }
@@ -68,7 +77,7 @@ app.post('/api/analyze/url', async (req, res) => {
       extra,
     );
     const report = await withInsights(analyzeProfile(profile));
-    res.json({ source: 'url', missing: scraped.missing, report });
+    res.json({ source: scraped.source, missing: scraped.missing, report });
   } catch (err) {
     const detected = typeof url === 'string' ? detectPlatform(url) : null;
     const status = err instanceof ScrapeError && err.code === 'invalid_url' ? 400 : 422;
@@ -77,7 +86,7 @@ app.post('/api/analyze/url', async (req, res) => {
       fallback: status === 422,
       error: err instanceof ScrapeError && err.code === 'invalid_url'
         ? err.message
-        : "We couldn't reach that profile. Upload screenshots or enter your stats instead.",
+        : fallbackMessage(detected?.platform, false),
       partial: detected ? { platform: detected.platform, handle: detected.handle, url: detected.url } : null,
     });
   }

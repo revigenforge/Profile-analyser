@@ -56,12 +56,35 @@ How it runs on Vercel:
 - Screenshots are shrunk in the browser to stay under Vercel's 4.5 MB request limit.
 - If the sheet variables are missing on Vercel, the Connect form shows an error instead of silently losing sign-ups.
 
+## Instagram links (free Meta API)
+
+Instagram blocks normal page requests from servers, so it needs a data source. The app tries these in order:
+
+1. **Meta Business Discovery API** (official, free, reliable). It uses RevigenForge's own Instagram account to look up any **creator or business** account and returns followers, following, posts, bio, website, and likes and comments on the last 12 posts. Engagement rate and posts per week are then calculated automatically.
+2. **Instagram's public web endpoint** (free, no setup). Instagram often blocks it from cloud servers, so it only works sometimes.
+3. **Screenshots / manual entry**, if both of the above fail. This also covers *personal* Instagram accounts, which Meta's API can't see.
+
+### One-time setup for option 1
+1. **RevigenForge's Instagram account → Professional.** In the Instagram app: *Settings → Account type and tools → Switch to professional account*. Then connect it to a Facebook Page: *Facebook Page settings → Linked accounts → Instagram*.
+2. **Create a Meta app** at [developers.facebook.com](https://developers.facebook.com/apps): *Create app → Business*. Add the **Instagram** product and choose *API setup with Facebook login*. The app can stay in Development mode, since only your own account uses it.
+3. **Get a token** in the [Graph API Explorer](https://developers.facebook.com/tools/explorer). Select your app, click *Generate Access Token*, and grant `instagram_basic`, `pages_show_list`, `pages_read_engagement` and `business_management`.
+4. **Find your Instagram user ID.** In the Explorer, run `me/accounts?fields=name,instagram_business_account` and copy the `instagram_business_account.id`.
+5. **Make the token last.** Explorer tokens expire in about 1 hour. In the [Access Token Debugger](https://developers.facebook.com/tools/debug/accesstoken/), click *Extend Access Token* to get a 60-day token. For a token that never expires, create a **System User** in Meta Business Settings and generate its token with the same permissions.
+6. **Add to Vercel's environment variables:**
+   - `META_ACCESS_TOKEN`: the token
+   - `META_IG_USER_ID`: the ID from step 4
+
+   Then redeploy.
+
+Limits: around 200 lookups per hour, and only creator/business accounts can be looked up. If you use a 60-day token, renew it before it expires; after that, lookups quietly fall back to screenshots.
+
 ## Project layout
 
 ```
 server.js           Express API + static hosting
 lib/platforms.js    URL → platform/handle detection, per-platform benchmarks
 lib/scraper.js      Public page fetch (SSRF-guarded) + metric extraction
+lib/instagram.js    Instagram via Meta Business Discovery / public web endpoint
 lib/analyzer.js     Deterministic scoring, checklist, recommendations
 lib/ai.js           Optional Claude vision extraction + insights
 lib/storage.js      Google Sheet (Apps Script webhook) / local-file storage
@@ -83,5 +106,5 @@ test/               node:test unit tests
 
 ## Notes
 
-- Instagram, TikTok and X often serve a login wall to servers, especially from datacenter IPs. In that case the screenshot/manual flow takes over. YouTube and personal sites usually work.
+- TikTok and X often serve a login wall to servers, especially from datacenter IPs. In that case the screenshot/manual flow takes over. Instagram works through the Meta API above. YouTube and personal sites usually work.
 - Add rate limiting to the public endpoints before heavy traffic. Vercel's Firewall rate-limit rules work for this.
