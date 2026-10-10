@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profile Analyser — RevigenForge</title>
+  <meta name="description" content="Analyse your creator profile and get a clear plan to grow your presence with RevigenForge." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="RevigenForge home"><img src="logo.png" alt="RevigenForge" width="640" height="353" /></a>
+    <nav>
+      <a href="#analyse">Analyse</a>
+      <a href="#connect" class="nav-cta">Work with us</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="analyse">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="float float-1" aria-hidden="true">
+        <span class="float-k">Engagement</span>
+        <span class="float-v">4.8%</span>
+        <span class="pill pill-good"><i>▲</i> Strong</span>
+      </div>
+      <div class="float float-2" aria-hidden="true">
+        <span class="float-k">Follower growth</span>
+        <span class="float-v">+6.2%<small>/mo</small></span>
+        <svg viewBox="0 0 120 36" class="spark"><polyline points="2,30 18,27 34,28 50,20 66,22 82,13 98,11 118,4" /></svg>
+      </div>
+      <div class="float float-3" aria-hidden="true">
+        <span class="float-k">Posting</span>
+        <span class="float-v">2×<small>/wk</small></span>
+        <span class="pill pill-fair"><i>●</i> Fair</span>
+      </div>
+      <div class="float float-4" aria-hidden="true">
+        <svg viewBox="0 0 60 60" class="mini-ring"><circle cx="30" cy="30" r="24" /><circle cx="30" cy="30" r="24" class="mini-ring-fg" /></svg>
+        <span><span class="float-k">Creator score</span><span class="float-v">82</span></span>
+      </div>
+      <p class="eyebrow">Creator Profile Analyser</p>
+      <h1>Know your profile.<br />Grow your presence.</h1>
+      <p class="lede">Drop your profile link and get a full breakdown — reach, engagement, consistency, bio and brand readiness — plus a clear plan to level up with RevigenForge.</p>
+
+      <div class="card analyser">
+        <div class="tabs" role="tablist">
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="link">Profile link</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="manual">Screenshots &amp; manual</button>
+        </div>
+
+        <!-- Link mode -->
+        <form id="link-form" class="panel" data-panel="link">
+          <label class="label" for="profile-url">Paste your profile URL</label>
+          <div class="url-row">
+            <input id="profile-url" name="url" type="text" inputmode="url" autocomplete="url"
+              placeholder="instagram.com/yourhandle · youtube.com/@channel · tiktok.com/@you" required />
+            <button class="btn btn-primary" type="submit">Analyse</button>
+          </div>
+          <p class="hint">Works with Instagram, TikTok, YouTube, X, LinkedIn, Threads, Facebook and more. If a platform blocks us, you can upload screenshots instead.</p>
+          <div class="platform-strip" aria-hidden="true">
+            <span>Instagram</span><span>TikTok</span><span>YouTube</span><span>X</span><span>LinkedIn</span><span>Threads</span>
+          </div>
+        </form>
+
+        <!-- Manual mode -->
+        <form id="manual-form" class="panel" data-panel="manual" hidden>
+          <div id="fallback-note" class="notice" hidden></div>
+
+          <div class="step">
+            <div class="step-head"><span class="step-num">01</span><h3>Upload screenshots <small>(optional)</small></h3></div>
+            <label class="dropzone" id="dropzone">
+              <input id="screenshots" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple />
+              <strong>Drop screenshots here</strong>
+              <span>Profile page, insights / analytics, a few recent posts · up to 6 images</span>
+            </label>
+            <div id="thumbs" class="thumbs"></div>
+            <div class="extract-row">
+              <button id="extract-btn" class="btn btn-ghost" type="button" disabled>Read numbers from screenshots</button>
+              <span id="extract-status" class="hint"></span>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-head"><span class="step-num">02</span><h3>Your profile details</h3></div>
+            <div class="grid">
+              <label class="field"><span>Platform</span>
+                <select name="platform" required>
+                  <option value="instagram">Instagram</option>
+                  <option value="tiktok">TikTok</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="x">X (Twitter)</option>
+                  <option value="linkedin">LinkedIn</option>
+                  <option value="threads">Threads</option>
+                  <option value="facebook">Facebook</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+              <label class="field"><span>Handle</span><input name="handle" placeholder="@yourhandle" /></label>
+              <label class="field"><span>Display name</span><input name="displayName" placeholder="Name | What you do" /></label>
+              <label class="field"><span>Niche</span><input name="niche" placeholder="e.g. fitness, tech reviews, food" /></label>
+              <label class="field span-2"><span>Bio</span><textarea name="bio" rows="3" placeholder="Paste your bio exactly as it appears"></textarea></label>
+              <label class="field span-2"><span>Link in bio / website</span><input name="website" placeholder="https://" /></label>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-head"><span class="step-num">03</span><h3>Your numbers</h3></div>
+            <div class="grid grid-4">
+              <label class="field"><span>Followers</span><input name="followers" inputmode="numeric" placeholder="12400" /></label>
+              <label class="field"><span>Following</span><input name="following" inputmode="numeric" placeholder="380" /></label>
+              <label class="field"><span>Total posts</span><input name="posts" inputmode="numeric" placeholder="210" /></label>
+              <label class="field"><span>Posts / week</span><input name="postsPerWeek" inputmode="decimal" placeholder="3" /></label>
+              <label class="field"><span>Avg likes / post</span><input name="avgLikes" inputmode="numeric" placeholder="450" /></label>
+              <label class="field"><span>Avg comments / post</span><input name="avgComments" inputmode="numeric" placeholder="25" /></label>
+              <label class="field"><span>Avg views / post</span><input name="avgViews" inputmode="numeric" placeholder="6000" /></label>
+              <label class="field"><span>Avg shares / post</span><input name="avgShares" inputmode="numeric" placeholder="12" /></label>
+              <label class="field span-2"><span>Net new followers, last 30 days <small>(from insights; can be negative)</small></span><input name="newFollowers30d" inputmode="numeric" placeholder="+850" /></label>
+            </div>
+            <p class="hint">Tip: “12.4K” and “1.2M” work too. Leave anything you don't know blank.</p>
+            <label class="check"><input type="checkbox" name="verified" /> Verified account</label>
+            <label class="field"><span>What do you want to achieve? <small>(optional)</small></span>
+              <textarea name="goals" rows="2" placeholder="e.g. land first brand deals, hit 50K, launch a course"></textarea>
+            </label>
+          </div>
+
+          <input type="hidden" name="url" />
+          <button class="btn btn-primary btn-block" type="submit">Analyse my profile</button>
+        </form>
+
+        <div id="form-error" class="error" role="alert" hidden></div>
+      </div>
+    </section>
+
+    <section id="loading" class="loading" hidden aria-live="polite">
+      <div class="spinner"></div>
+      <p id="loading-text">Analysing profile…</p>
+    </section>
+
+    <section id="results" class="results" hidden></section>
+
+    <section class="connect" id="connect">
+      <div class="connect-inner">
+        <div>
+          <img class="connect-logo" src="logo-white.png" alt="RevigenForge" width="640" height="353" />
+          <p class="eyebrow eyebrow-inv">The RevigenForge network</p>
+          <h2>Grow with creators who build together.</h2>
+          <p>We partner with creators on strategy, content systems and brand collaborations. Tell us about you and our team will reach out personally.</p>
+          <ul class="perks">
+            <li>Personal growth strategy session</li>
+            <li>Profile &amp; media-kit makeover</li>
+            <li>Brand collaboration opportunities</li>
+            <li>A community of creators levelling up together</li>
+          </ul>
+        </div>
+        <form id="connect-form" class="card card-inv">
+          <label class="field"><span>Name</span><input name="name" required autocomplete="name" /></label>
+          <label class="field"><span>Email</span><input name="email" type="email" required autocomplete="email" /></label>
+          <label class="field"><span>Main handle</span><input name="handle" placeholder="@yourhandle" /></label>
+          <fieldset class="chips">
+            <legend>I'm interested in</legend>
+            <label><input type="checkbox" name="interests" value="Growth strategy" /> <span>Growth strategy</span></label>
+            <label><input type="checkbox" name="interests" value="Brand deals" /> <span>Brand deals</span></label>
+            <label><input type="checkbox" name="interests" value="Content production" /> <span>Content production</span></label>
+            <label><input type="checkbox" name="interests" value="Community" /> <span>Community</span></label>
+          </fieldset>
+          <label class="field"><span>Anything else?</span><textarea name="goals" rows="3"></textarea></label>
+          <input type="hidden" name="platform" />
+          <button class="btn btn-inv btn-block" type="submit">Connect with RevigenForge</button>
+          <p id="connect-status" class="hint" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span class="footer-brand"><img src="logo.png" alt="RevigenForge" width="640" height="353" /> © <span id="year"></span></span>
+    <span>We only read public profile data or what you choose to share.</span>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

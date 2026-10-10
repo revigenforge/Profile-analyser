@@ -1,0 +1,30 @@
+{
+  "name": "revigenforge-profile-analyser",
+  "version": "1.0.0",
+  "description": "Creator profile analyser by RevigenForge",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revigenforge/Profile-analyser.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/revigenforge/Profile-analyser/issues"
+  },
+  "homepage": "https://github.com/revigenforge/Profile-analyser#readme",
+  "type": "module",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.133.0",
+    "cheerio": "^1.2.0",
+    "express": "^5.3.0",
+    "multer": "^2.4.0",
+    "zod": "^4.6.5"
+  }
+}
