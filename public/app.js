@@ -185,14 +185,40 @@ document.addEventListener('paste', (e) => {
   if (!$('#manual-form').hidden && e.clipboardData?.files?.length) addFiles(e.clipboardData.files);
 });
 
+// Hosting caps uploads at ~4.5 MB per request, and the AI reads images at
+// ~1600px anyway, so downscale and re-encode before sending.
+const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
+const MAX_SIDE = 1600;
+
+async function shrinkImage(file) {
+  if (file.type === 'image/gif') return file; // keep GIFs as-is
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close?.();
+    const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+    if (!blob || blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', { type: 'image/jpeg' });
+  } catch {
+    return file;
+  }
+}
+
 $('#extract-btn').addEventListener('click', async () => {
   const status = $('#extract-status');
   const btn = $('#extract-btn');
   btn.disabled = true;
   status.textContent = 'Reading your screenshots…';
   try {
+    const shrunk = await Promise.all(state.files.map((f) => shrinkImage(f)));
+    const total = shrunk.reduce((sum, f) => sum + f.size, 0);
+    if (total > MAX_UPLOAD_BYTES) throw new Error('Those screenshots are too large together — try fewer images.');
     const fd = new FormData();
-    state.files.forEach((f) => fd.append('screenshots', f));
+    shrunk.forEach((f) => fd.append('screenshots', f));
     const { extracted } = await api('/api/extract', { method: 'POST', body: fd });
     if (!extracted) throw new Error('No readable images found.');
     const { notes, ...fields } = extracted;

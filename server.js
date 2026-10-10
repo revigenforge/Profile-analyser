@@ -1,15 +1,14 @@
 import express from 'express';
 import multer from 'multer';
-import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { analyzeProfile } from './lib/analyzer.js';
 import { scrapeProfile, ScrapeError } from './lib/scraper.js';
 import { aiEnabled, extractFromScreenshots, generateInsights } from './lib/ai.js';
 import { detectPlatform } from './lib/platforms.js';
+import { saveConnection } from './lib/storage.js';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = process.env.DATA_DIR || path.join(here, 'data');
 const PORT = Number(process.env.PORT) || 3000;
 
 export const app = express();
@@ -17,9 +16,11 @@ app.disable('x-powered-by');
 app.use(express.json({ limit: '200kb' }));
 app.use(express.static(path.join(here, 'public')));
 
+// Vercel caps a request body at 4.5 MB, so the browser shrinks screenshots before
+// upload (see public/app.js) and we keep the server limit just under that.
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: { files: 6, fileSize: 8 * 1024 * 1024 },
+  limits: { files: 6, fileSize: 4 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => cb(null, /^image\/(png|jpe?g|webp|gif)$/.test(file.mimetype)),
 });
 
@@ -130,8 +131,12 @@ app.post('/api/connect', async (req, res) => {
   if (!entry.name || !EMAIL.test(entry.email)) {
     return res.status(400).json({ error: 'Please add your name and a valid email.' });
   }
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.appendFile(path.join(DATA_DIR, 'connections.jsonl'), `${JSON.stringify(entry)}\n`);
+  try {
+    await saveConnection(entry);
+  } catch (err) {
+    console.error('Saving connection failed:', err.message);
+    return res.status(502).json({ error: "We couldn't save your details just now. Please try again in a moment." });
+  }
   res.json({ ok: true });
 });
 
@@ -140,7 +145,7 @@ app.use('/api', (_req, res) => res.status(404).json({ error: 'Not found' }));
 // eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError) {
-    return res.status(400).json({ error: err.code === 'LIMIT_FILE_SIZE' ? 'Each screenshot must be under 8 MB.' : 'Up to 6 screenshots, please.' });
+    return res.status(400).json({ error: err.code === 'LIMIT_FILE_SIZE' ? 'Screenshots are too large. Please upload smaller images.' : 'Up to 6 screenshots, please.' });
   }
   console.error(err);
   res.status(500).json({ error: 'Something went wrong.' });
